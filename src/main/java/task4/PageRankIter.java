@@ -63,7 +63,7 @@ public class PageRankIter {
                 else
                     PR += Double.parseDouble(link.split(" ")[1]);
             }
-            context.write(new Text(key), new Text(String.valueOf(PR) + " " + links));
+            context.write(new Text(key), new Text(String.valueOf(PR) + "\t" + links));
         }
     }
 }
