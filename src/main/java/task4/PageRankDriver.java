@@ -1,7 +1,7 @@
 package PageRank;
 
 public class PageRankDriver {
-    private static int times = 2;
+    private static int times = 10;
 
     public static void main(String[] args) throws Exception{
 
@@ -9,18 +9,18 @@ public class PageRankDriver {
            // throw new RuntimeException("请输入输入路径、输出路径");
         //}
 
-        String[] forGB = {"/home/jingtao/Java/Final/task2-output.txt", "/home/jingtao/Java/Final/Data0"};
+        String[] forGB = {"../task2-output.txt", "../Data0"};
         //forGB[0] = args[0];
         GraphBuilder.graphBuilder(forGB);
 
-        String[] forItr = {"/home/jingtao/Java/Final/Data0", "/home/jingtao/Java/Final/Data1"};
+        String[] forItr = {"../Data0", "../Data1"};
         for(int i = 0; i < times; i++){
-            forItr[0] = "/home/jingtao/Java/Final/Data" + (i);
-            forItr[1] = "/home/jingtao/Java/Final/Data" + (i + 1);
+            forItr[0] = "../Data" + (i);
+            forItr[1] = "../Data" + (i + 1);
             PageRankIter.pageRankIter(forItr);
         }
 
-        String[] forRV = {"/home/jingtao/Java/Final/Data" + times, "/home/jingtao/Java/Final/task3-output.txt"};
+        String[] forRV = {"../Data" + times, "../task3-output"};
         RankViewer.rankViewer(forRV);
     }
 }
