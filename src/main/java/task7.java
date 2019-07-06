@@ -41,13 +41,14 @@ public class task7 {
 
     public static class Task7_Mapper extends Mapper<LongWritable, Text, Text, Text>{
 
-        static Map<String, String> name_novels = new HashMap<>();
-        public void setup(Context context) throws IOException
+        static Map<String, List<String> > name_novels = new HashMap<>();
+        protected void setup(Context context) throws IOException
         {
             String path = "/home/hadoop/test/task2/task1-output";//the path of task1-output
             File file = new File(path);
-
             File[] fs = file.listFiles();
+
+
             for(File f:fs)
             {
                 String novel = f.getName().replace("-output.txt", "").replace("金庸","").replaceAll("\\d+","");
@@ -61,17 +62,28 @@ public class task7 {
                     StringTokenizer name_list = new StringTokenizer(line, " ");
                     while(name_list.hasMoreTokens())
                     {
-                        String name = name_list.nextToken();
+                        String name = name_list.nextToken().replace("\t", "");
 
-                        String book;
-                        if((book = name_novels.get(name))==null)
+                        List<String> books;
+                        if((books = name_novels.get(name))==null)
                         {
-                            name_novels.put(name, novel);
+                            List<String> new_books = new ArrayList<String>();
+                            new_books.add(novel);
+                            name_novels.put(name, new_books);
+                        }
+                        else
+                        {
+                            if (!books.contains(novel))
+                            {
+                                books.add(novel);
+                                name_novels.put(name, books);
+                            }
                         }
 
                     }
                 }
             }
+            System.out.println(name_novels.size());
             System.out.println(name_novels);
         }
 
@@ -82,33 +94,42 @@ public class task7 {
 
             String Label = str.split("\t")[0];
             StringTokenizer name_list = new StringTokenizer(str.split("\t")[1], " ");
-            while(name_list.hasMoreTokens())
-            {
+            while(name_list.hasMoreTokens()) {
                 String name = name_list.nextToken();
-                String novel = name_novels.get(name);
+                List<String> novels = name_novels.get(name);
 
-                System.out.println(Label+"\t"+name+"#"+novel);
-                context.write(new Text(Label), new Text(name+"#"+novel));
+                for (String novel : novels)
+                {
+                    System.out.println(Label + "\t" + name + "#" + novel);
+                    context.write(new Text(Label), new Text(name + "#" + novel));
+                }
             }
-
         }
     }
 
     public static class Task7_Reducer extends Reducer<Text, Text, Text, Text>{
+
         @Override
         protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
 
             Map<String, Integer> novel_votes = new HashMap<>();
 
             System.out.println(key.toString());
+
+            List<String> name_list = new ArrayList<String>();
             String namelist = "";
-            for(Text val:values)
-            {
+            for(Text val:values) {
                 String str = val.toString();
+                System.out.println(str);
                 String name = str.split("#")[0];
                 String novel = str.split("#")[1];
 
-                namelist = namelist + name + " ";
+                if (!name_list.contains(name))
+                {
+                    name_list.add(name);
+                    namelist = namelist + name + " ";
+                }
+
                 Integer vote;
                 if((vote = novel_votes.get(novel))==null)
                 {
@@ -139,10 +160,9 @@ public class task7 {
     }
 
 
-
-
     public static void main(String[] args) throws IOException
     {
+
         Configuration conf = new Configuration();
         Job job = new Job(conf, "task7");
         job.setJarByClass(task7.class);			//设置任务jar的主类
