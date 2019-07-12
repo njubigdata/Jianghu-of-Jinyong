@@ -237,7 +237,7 @@ public class task5 {
     {
         Configuration conf = new Configuration();
         Job job = new Job(conf, "Jianghu");
-        job.setJarByClass(InvertedIndexer.class);			//设置任务jar的主类
+        job.setJarByClass(task5.class);			//设置任务jar的主类
         job.setInputFormatClass(TextInputFormat.class);		//文本流输入及分片
         job.setMapperClass(Task5_prepare_Mapper.class);		//Mapper类
         job.setReducerClass(Task5_prepare_Reducer.class);	    //Reducer类
@@ -271,7 +271,7 @@ public class task5 {
 
             Configuration conf2 = new Configuration();
             Job job2 = new Job(conf2, "LP");
-            job2.setJarByClass(InvertedIndexer.class);            //设置任务jar的主类
+            job2.setJarByClass(task5.class);            //设置任务jar的主类
             job2.setInputFormatClass(TextInputFormat.class);        //文本流输入及分片
             job2.setMapperClass(Task5_LP_Mapper.class);        //Mapper类
             job2.setReducerClass(Task5_LP_Reducer.class);        //Reducer类
@@ -317,7 +317,7 @@ public class task5 {
 
         Configuration conf3 = new Configuration();
         Job job3 = new Job(conf3, "Partition");
-        job3.setJarByClass(InvertedIndexer.class);            //设置任务jar的主类
+        job3.setJarByClass(task5.class);            //设置任务jar的主类
         job3.setInputFormatClass(TextInputFormat.class);        //文本流输入及分片
         job3.setMapperClass(Task5_Partition_Mapper.class);        //Mapper类
         job3.setReducerClass(Task5_Partition_Reducer.class);        //Reducer类
