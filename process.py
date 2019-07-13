@@ -1,5 +1,6 @@
 import csv
 
+
 if __name__ == '__main__':
     file="task3-output.txt"
     with open(file,"r",encoding="utf-8") as f:
